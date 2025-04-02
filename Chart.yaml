@@ -1,0 +1,4 @@
+apiVersion: v2
+name: cosmos-validator
+version: 1.0.0
+description: Helm chat for deploying a Cosmos validator in Kubernetes

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-horcrux
+  labels:
+    app: horcrux
+spec:
+  serviceName: horcrux
+  replicas: 1
+  selector:
+    matchLabels:
+      app: horcrux
+  template:
+    metadata:
+      labels:
+        app: horcrux
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: horcrux
+          image: "cosmos/horcrux:latest"
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+          volumeMounts:
+            - name: horcrux-config
+              mountPath: /root/.horcrux
+          env:
+            - name: SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: horcrux-secrets
+                  key: signing_key
+      volumes:
+        - name: horcrux-config
+          persistentVolumeClaim:
+            claimName: horcrux-pvc
+

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-validator
+  labels: 
+    app: cosmos-validator
+spec:
+  serviceName: cosmos-validator
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cosmos-validator
+  template:
+    metadata:
+      labels:
+        app: cosmos-validator
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: validator
+          image: "cosmos/validator:latest"
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+          volumeMounts:
+            - name: config
+              mountPath: /root/.cosmos
+            - name: keys
+              mountPath: /root/.keys
+          env:
+            - name: CHAIN_ID
+              value: "cosmoshub-4"
+            - name: MONIKER
+              value: "my-validator"
+            - name: PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: validator-secrets
+                  key: private_key
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 26657
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 26657
+            initialDelaySeconds: 10
+            periodSeconds: 30
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-pvc
+        - name: keys
+          secret:
+            secretName: validator-secrets

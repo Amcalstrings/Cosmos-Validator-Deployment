@@ -1,0 +1,7 @@
+validator:
+  private_key: "BASE64_ENCODED_PRIVATE_KEY"
+  moniker: "my-validator"
+  chain_id: "CHAIN_ID"
+
+horcrux:
+  signing_key: "BASE64_ENCODED_SIGNING_KEY"	

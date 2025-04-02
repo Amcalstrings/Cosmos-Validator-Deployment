@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-validator
+spec:
+  selector:
+    app: cosmos-validator
+  ports:
+    - protocol: TCP
+      port: 26656
+      targetPort: 26656
+    - protocol: TCP
+      port: 26657
+      targetPort: 26657
