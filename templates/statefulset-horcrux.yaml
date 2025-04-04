@@ -37,6 +37,22 @@ spec:
                 secretKeyRef:
                   name: horcrux-secrets
                   key: signing_key
+          # liveliness and readiness probes
+          livenessProbe:
+            exec:
+              command:
+                - horcrux
+                - health
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - horcrux
+                - status
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
       volumes:
         - name: horcrux-config
           persistentVolumeClaim:

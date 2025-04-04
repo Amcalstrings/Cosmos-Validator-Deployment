@@ -43,6 +43,7 @@ spec:
                 secretKeyRef:
                   name: validator-secrets
                   key: private_key
+          # livenessinessProbe and readinessProbe to check the health of the validator
           livenessProbe:
             httpGet:
               path: /health
@@ -55,6 +56,7 @@ spec:
               port: 26657
             initialDelaySeconds: 10
             periodSeconds: 30
+            
       volumes:
         - name: config
           persistentVolumeClaim:

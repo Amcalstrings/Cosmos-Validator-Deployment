@@ -5,3 +5,5 @@ validator:
 
 horcrux:
   signing_key: "BASE64_ENCODED_SIGNING_KEY"	
+
+  
